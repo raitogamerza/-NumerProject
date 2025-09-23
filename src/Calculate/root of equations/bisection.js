@@ -1,0 +1,32 @@
+import { evaluate } from 'mathjs';
+
+export function bisectionMethod(fx, x0, x1, tol = 0.000001, maxIter = 1000) {
+  let xl = parseFloat(x0);
+  let xr = parseFloat(x1);
+  let tolerance = parseFloat(tol);
+  let iter = 0;
+  let xm, fxl, fxr, fxm;
+  const records = [];
+
+  if (isNaN(xl) || isNaN(xr) || isNaN(tolerance) || typeof fx !== 'string' || fx.trim() === '') {
+    throw new Error('กรุณากรอกข้อมูลให้ครบ');
+  }
+
+  do {
+    xm = (xl + xr) / 2;
+    fxl = evaluate(fx, { x: xl });
+    fxr = evaluate(fx, { x: xr });
+    fxm = evaluate(fx, { x: xm });
+
+    records.push({ a: xl, b: xr, c: xm });
+
+    if (fxm * fxl < 0) {
+      xr = xm;
+    } else {
+      xl = xm;
+    }
+    iter++;
+  } while (Math.abs(fxm) > tolerance && iter < maxIter);
+
+  return { root: xm, iterations: iter, records };
+}
