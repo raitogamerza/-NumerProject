@@ -1,11 +1,15 @@
 import { evaluate } from 'mathjs';
 
+// บันทึก error ต่อรอบ: ใช้สองแบบ
+//   errApprox = |c_k - c_{k-1}| (เริ่มรอบแรก = null)
+//   errFunc   = |f(c_k)|
 export function bisectionMethod(fx, x0, x1, tol = 0.000001, maxIter = 1000) {
   let xl = parseFloat(x0);
   let xr = parseFloat(x1);
-  let tolerance = parseFloat(tol);
+  const tolerance = parseFloat(tol);
   let iter = 0;
   let xm, fxl, fxr, fxm;
+  let prevC = null;
   const records = [];
 
   if (isNaN(xl) || isNaN(xr) || isNaN(tolerance) || typeof fx !== 'string' || fx.trim() === '') {
@@ -18,7 +22,10 @@ export function bisectionMethod(fx, x0, x1, tol = 0.000001, maxIter = 1000) {
     fxr = evaluate(fx, { x: xr });
     fxm = evaluate(fx, { x: xm });
 
-    records.push({ a: xl, b: xr, c: xm });
+    const errApprox = prevC === null ? null : Math.abs(xm - prevC);
+    const errFunc = Math.abs(fxm);
+    records.push({ a: xl, b: xr, c: xm});
+    prevC = xm;
 
     if (fxm * fxl < 0) {
       xr = xm;

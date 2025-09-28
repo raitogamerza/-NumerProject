@@ -26,6 +26,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route>
+          <Route path="*" element={<Home />} />
           <Route path="Home" element={<Home />} />
           <Route path="bisection" element={<Bisection />} />
           <Route path="graphical" element={<Graphical />} />
