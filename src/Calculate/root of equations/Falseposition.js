@@ -26,9 +26,6 @@ export function FalsepositionMethod(fx, x0, x1, tol = 0.000001, maxIter = 1000) 
         xm = (xl * fxr - xr * fxl) / (fxr - fxl);
         fxm = evaluate(fx, { x: xm });
 
-        const errApprox = prevXm === null ? null : Math.abs(xm - prevXm);
-        const errFunc = Math.abs(fxm);
-
         // Push record with both naming styles for compatibility
         records.push({a: xl,b: xr,c: xm,xl,xr,xm,fxl,fxr,fxm});
         prevXm = xm;

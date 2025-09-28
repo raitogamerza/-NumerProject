@@ -22,8 +22,7 @@ export function bisectionMethod(fx, x0, x1, tol = 0.000001, maxIter = 1000) {
     fxr = evaluate(fx, { x: xr });
     fxm = evaluate(fx, { x: xm });
 
-    const errApprox = prevC === null ? null : Math.abs(xm - prevC);
-    const errFunc = Math.abs(fxm);
+    
     records.push({ a: xl, b: xr, c: xm});
     prevC = xm;
 

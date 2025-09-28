@@ -5,9 +5,9 @@ import PlotlyGraph from "../components/PlotlyGraph";
 
 
 function Falseposition() {
-  const [fx, setFx] = React.useState('43x-180');
-  const [x0, setX0] = React.useState('0');
-  const [x1, setX1] = React.useState('10');
+  const [fx, setFx] = React.useState('x*x-13');
+  const [x0, setX0] = React.useState('1.5');
+  const [x1, setX1] = React.useState('2.0');
   const [tol, setTol] = React.useState('0.000001');
   const [root, setRoot] = React.useState(null);
   const [iterations, setIterations] = React.useState(null);
@@ -82,7 +82,7 @@ function Falseposition() {
           Calculate
         </button>
         <div className='mt-4'>
-          <h2 className="text-xl">Results</h2>
+          <h2 className="text-xl">Result:</h2>
         {root !== null && (
           <div className="mt-4">
             <p className="text-lg">Root: {root}</p>
@@ -98,7 +98,7 @@ function Falseposition() {
               <table className="min-w-full border-collapse">
                 <thead className="sticky top-0 bg-gray-100 shadow text-sm">
                   <tr>
-                    <th className="border border-gray-300 p-2">Iter</th>
+                    <th className="border border-gray-300 p-2">Iteration</th>
                     <th className="border border-gray-300 p-2">xl</th>
                     <th className="border border-gray-300 p-2">xr</th>
                     <th className="border border-gray-300 p-2">xm</th>
@@ -124,7 +124,6 @@ function Falseposition() {
                 </tbody>
               </table>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Values rounded to tolerance precision (6 decimals). Green row indicates |f(xm)| ≤ tolerance.</p>
           </div>
         )}
       </center>
