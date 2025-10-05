@@ -1,21 +1,25 @@
-import React from 'react'
-import { evaluate } from 'mathjs';
-import { FalsepositionMethod } from './root of equations/Falseposition';
+import React from "react";
+import { evaluate } from "mathjs";
+import { FalsepositionMethod } from "./root of equations/Falseposition";
 import PlotlyGraph from "../components/PlotlyGraph";
 
-
 function Falseposition() {
-  const [fx, setFx] = React.useState('x*x-13');
-  const [x0, setX0] = React.useState('1.5');
-  const [x1, setX1] = React.useState('2.0');
-  const [tol, setTol] = React.useState('0.000001');
+  const [fx, setFx] = React.useState("x*x-13");
+  const [x0, setX0] = React.useState("0");
+  const [x1, setX1] = React.useState("10");
+  const [tol, setTol] = React.useState("0.000001");
   const [root, setRoot] = React.useState(null);
   const [iterations, setIterations] = React.useState(null);
   const [falsepositionRecords, setFalsepositionRecords] = React.useState([]);
 
   const handleCalculate = () => {
     try {
-      const { root, iterations, records } = FalsepositionMethod(fx, x0, x1, tol);
+      const { root, iterations, records } = FalsepositionMethod(
+        fx,
+        x0,
+        x1,
+        tol
+      );
       setRoot(root);
       setIterations(iterations);
       setFalsepositionRecords(records);
@@ -23,29 +27,20 @@ function Falseposition() {
       alert(err.message);
     }
   };
-    // ฟังก์ชัน f(x) สำหรับส่งไป plot
-  const func = (x) => {
-      try {
-        return evaluate(fx, { x });
-      } catch (e) {
-        return NaN;
-      }
-    };
 
-  const tolValue = parseFloat(tol);
-
-  const formatNumber = (value, decimals = 6) => {
-    if (value === null || value === undefined || isNaN(value)) return '-';
-    // Round to the specified decimals (tolerance precision)
-    const num = Number(value);
-    return num.toFixed(decimals);
-  };
+  const dataX = [];
+  const dataY = [];
+  const step = (parseFloat(x1) - parseFloat(x0)) / 100;
+  for (let x = parseFloat(x0); x <= parseFloat(x1); x += step) {
+    dataX.push(x);
+    dataY.push(evaluate(fx, { x }));
+  }
 
   return (
     <div>
       <center>
-        <h1 className='text-2xl'>False position</h1>
-         <input
+        <h1 className="text-2xl">False position</h1>
+        <input
           type="text"
           placeholder="Enter function f(x)"
           value={fx}
@@ -81,14 +76,14 @@ function Falseposition() {
         >
           Calculate
         </button>
-        <div className='mt-4'>
+        <div className="mt-4">
           <h2 className="text-xl">Result:</h2>
-        {root !== null && (
-          <div className="mt-4">
-            <p className="text-lg">Root: {root}</p>
-            <p className="text-lg">Iterations: {iterations}</p>
-          </div>
-        )}
+          {root !== null && (
+            <div className="mt-4">
+              <p className="text-lg">Root: {root.toFixed(6)}</p>
+              <p className="text-lg">Iterations: {iterations}</p>
+            </div>
+          )}
         </div>
 
         {falsepositionRecords.length > 0 && (
@@ -102,34 +97,45 @@ function Falseposition() {
                     <th className="border border-gray-300 p-2">xl</th>
                     <th className="border border-gray-300 p-2">xr</th>
                     <th className="border border-gray-300 p-2">xm</th>
-                    <th className="border border-gray-300 p-2">f(xm)</th>
+                    <th className="border border-gray-300 p-2">Error</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  {falsepositionRecords.map((record, index) => {
-                    const highlight = Math.abs(record.fxm) <= tolValue;
-                    return (
-                      <tr
-                        key={index}
-                        className={`text-center hover:bg-gray-50 `}
-                      >
-                        <td className="border border-gray-300 p-2">{index + 1}</td>
-                        <td className="border border-gray-300 p-2">{formatNumber(record.xl)}</td>
-                        <td className="border border-gray-300 p-2">{formatNumber(record.xr)}</td>
-                        <td className="border border-gray-300 p-2 font-medium">{formatNumber(record.xm)}</td>
-                        <td className="border border-gray-300 p-2">{formatNumber(record.fxm)}</td>
-                      </tr>
-                    );
-                  })}
+                  {falsepositionRecords.map((record, index) => (
+                    <tr key={index} className={`text-center hover:bg-gray-50 `}>
+                      <td className="border border-gray-300 p-2">
+                        {index + 1}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {record.xl.toFixed(6)}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {record.xr.toFixed(6)}
+                      </td>
+                      <td className="border border-gray-300 p-2 font-medium">
+                        {record.xm.toFixed(6)}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {record.fxm.toFixed(6)}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
+
+            <PlotlyGraph
+              dataX={dataX}
+              dataY={dataY}
+              graphName="False position Method"
+              iterations={falsepositionRecords}
+              fx={fx}
+            />
           </div>
         )}
       </center>
     </div>
-
-  )
+  );
 }
 
-export default Falseposition
+export default Falseposition;

@@ -1,44 +1,60 @@
-import Plot from 'react-plotly.js';
+import React from "react";
+import Plot from "react-plotly.js";
+import { evaluate } from "mathjs";
 
-const PlotlyGraph = ({ func, a, b, iterations, pointsName = "Points", showLabels = true }) => {
-  // สร้างข้อมูลแกน x และ y สำหรับ plot ฟังก์ชัน
-  const step = (b - a) / 50;
-  const x = Array.from({ length: 50 }, (_, i) => a + i * step);
-  const y = x.map(func);
+const PlotlyGraph = ({ dataX, dataY, graphName, iterations, fx }) => {
+  const iterX =
+    iterations.length > 0 ? iterations.map((item) => Number(item.c)) : [];
+  const iterY = iterX.map((x) => evaluate(fx, { x }));
 
-  // ดึงจุดจาก iterations (ใช้ .c ถ้ามี, ถ้าเป็น Graphical ก็ยังใช้ได้)
-  const cPoints = iterations.map((it) => it.c);
-  const cValues = cPoints.map(func);
+  const rootX = iterX.length > 0 ? iterX[iterX.length - 1] : null;
+  const rootY = iterY.length > 0 ? iterY[iterY.length - 1] : null;
 
   return (
-    <Plot
-      data={[
-        {
-          x,
-          y,
-          type: 'scatter',
-          mode: 'lines',
-          name: 'f(x)',
-          line: { color: 'blue' },
-        },
-        {
-          x: cPoints,
-          y: cValues,
-          type: 'scatter',
-          mode: showLabels ? 'markers+text' : 'markers',
-          name: pointsName,
-          marker: { color: 'red', size: 10 },
-          text: showLabels ? cPoints.map((c, i) => `${pointsName}${i + 1}`) : [],
-          textposition: 'top center',
-        },
-      ]}
-      layout={{
-        title: `${pointsName} Visualization`,
-        xaxis: { title: 'x' },
-        yaxis: { title: 'f(x)' },
-      }}
-      style={{ width: '100%', height: '500px' }}
-    />
+    <div className="flex justify-center items-center p-6">
+      <div className="w-full max-w-4xl bg-white shadow-lg rounded-2xl p-4">
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          {graphName}
+        </h2>
+        <Plot
+          data={[
+            {
+              x: dataX,
+              y: dataY,
+              type: "scatter",
+              mode: "lines",
+              name: "f(x)",
+              line: { color: "red", width: 2 },
+            },
+            // จุด iteration
+            {
+              x: iterX,
+              y: iterY,
+              type: "scatter",
+              mode: "markers",
+              name: "Iterations",
+              marker: { color: "blue", size: 8 },
+              text: iterX.map(
+                (x, i) => `iteration = ${i + 1}, x = ${x}, f(x) = ${iterY[i]}`
+              ),
+              hoverinfo: "text",
+            },
+          ]}
+          layout={{
+            title: graphName,
+            xaxis: { title: "X", zeroline: true },
+            yaxis: { title: "Y", zeroline: true },
+            margin: { t: 50, l: 50, r: 30, b: 50 },
+            dragmode: "pan",
+          }}
+          style={{ width: "100%", height: "100%" }}
+          config={{
+            responsive: true,
+            scrollZoom: true,
+          }}
+        />
+      </div>
+    </div>
   );
 };
 

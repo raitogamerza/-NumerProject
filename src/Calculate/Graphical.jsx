@@ -1,25 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { evaluate } from "mathjs";
 import PlotlyGraph from "../components/PlotlyGraph";
 import { graphicalMethod } from "./root of equations/Graphical";
 
 function Graphical() {
-  const [fx, setFx] = useState("43x-180");
-  const [start, setStart] = useState("0");
-  const [finish, setFinish] = useState("10");
-  const [tol, setTol] = useState("0.000001");
-  const [root, setRoot] = useState(null);
-  const [iterations, setIterations] = useState(null);
-  const [GraphicalRecords, setGraphicalRecords] = useState([]);
+  const [fx, setFx] = React.useState("43x-180");
+  const [start, setStart] = React.useState("0");
+  const [finish, setFinish] = React.useState("10");
+  const [tol, setTol] = React.useState("0.000001");
+  const [root, setRoot] = React.useState(null);
+  const [iterations, setIterations] = React.useState(null);
+  const [GraphicalRecords, setGraphicalRecords] = React.useState([]);
 
-  // ฟังก์ชัน f(x) ที่ส่งไป plot
-  const func = (x) => {
-    try {
-      return evaluate(fx, { x });
-    } catch {
-      return NaN;
-    }
-  };
 
   const handleCalculate = () => {
     try {
@@ -31,6 +23,18 @@ function Graphical() {
       alert(err.message);
     }
   };
+
+  const dataX = [];
+  const dataY = [];
+  for (
+    let x = parseFloat(start);
+    x <= parseFloat(finish);
+    x += 0.1
+  ) {
+    dataX.push(x);
+    dataY.push(evaluate(fx, { x }));
+  }
+
 
   return (
     <div>
@@ -105,6 +109,13 @@ function Graphical() {
                 </tbody>
               </table>
             </div>
+            <PlotlyGraph
+              dataX={dataX}
+              dataY={dataY}
+              graphName="Graphical Method"
+              iterations={GraphicalRecords}
+              fx={fx}
+            />
           </div>
         )}
       </center>

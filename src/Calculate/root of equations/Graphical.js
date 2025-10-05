@@ -1,10 +1,5 @@
 import { evaluate } from "mathjs";
 
-// เพิ่ม error metrics:
-//  deltaX = |x_k - x_{k-1}| (รอบแรก = null)
-//  absFx = |f(x_k)|
-//  signFlip = true เมื่อเกิดการเปลี่ยนเครื่องหมายระหว่างจุดก่อนหน้าและจุดปัจจุบัน
-//  root (midpoint) เมื่อเจอ sign flip ครั้งแรก
 export function graphicalMethod(fx, a, b, step = 0.1) {
   const records = [];
   let root = null;

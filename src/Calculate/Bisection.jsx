@@ -1,16 +1,16 @@
-import { useState } from "react";
+import React from "react";
 import { evaluate } from "mathjs";
 import { bisectionMethod } from "./root of equations/bisection";
 import PlotlyGraph from "../components/PlotlyGraph";
 
 function Bisection() {
-  const [fx, setFx] = useState("43x-180");
-  const [x0, setX0] = useState("0");
-  const [x1, setX1] = useState("10");
-  const [tol, setTol] = useState("0.000001");
-  const [root, setRoot] = useState(null);
-  const [iterations, setIterations] = useState(null);
-  const [bisectionRecords, setBisectionRecords] = useState([]);
+  const [fx, setFx] = React.useState("43x-180");
+  const [x0, setX0] = React.useState("0");
+  const [x1, setX1] = React.useState("10");
+  const [tol, setTol] = React.useState("0.000001");
+  const [root, setRoot] = React.useState(null);
+  const [iterations, setIterations] = React.useState(null);
+  const [bisectionRecords, setBisectionRecords] = React.useState([]);
 
   const handleCalculate = () => {
     try {
@@ -23,14 +23,13 @@ function Bisection() {
     }
   };
 
-  // ฟังก์ชัน f(x) สำหรับส่งไป plot
-  const func = (x) => {
-    try {
-      return evaluate(fx, { x });
-    } catch (e) {
-      return NaN;
-    }
-  };
+  const dataX = [];
+  const dataY = [];
+  const step = 0.1
+  for (let x = parseFloat(x0); x <= parseFloat(x1); x += step) {
+    dataX.push(x);
+    dataY.push(evaluate(fx, { x }));
+  }
 
   return (
     <div>
@@ -91,37 +90,46 @@ function Bisection() {
               <table className="min-w-full border-collapse text-sm">
                 <thead className="sticky top-0 bg-gray-100 shadow">
                   <tr>
-                    <th className="border border-gray-300 px-2 py-1">iteration</th>
-                    <th className="border border-gray-300 px-2 py-1">a (xl)</th>
-                    <th className="border border-gray-300 px-2 py-1">b (xr)</th>
+                    <th className="border border-gray-300 px-2 py-1">
+                      iteration
+                    </th>
+                    <th className="border border-gray-300 px-2 py-1">xl</th>
+                    <th className="border border-gray-300 px-2 py-1">xr</th>
                     <th className="border border-gray-300 px-2 py-1">xm</th>
-                    <th className="border border-gray-300 px-2 py-1">f(x)</th>
+                    <th className="border border-gray-300 px-2 py-1">Error</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {bisectionRecords.map((rec, idx) => {
-                    const residual = Math.abs(evaluate(fx, { x: rec.c }));
-                    return (
-                      <tr key={idx} className="text-center hover:bg-gray-50">
-                        <td className="border border-gray-200 px-2 py-1">{idx + 1}</td>
-                        <td className="border border-gray-200 px-2 py-1">{rec.a.toFixed(6)}</td>
-                        <td className="border border-gray-200 px-2 py-1">{rec.b.toFixed(6)}</td>
-                        <td className="border border-gray-200 px-2 py-1 font-medium">{rec.c.toFixed(6)}</td>
-                        <td className="border border-gray-200 px-2 py-1">{evaluate(fx, { x: rec.c }).toFixed(6)}</td>
-                      </tr>
-                    );
-                  })}
+                  {bisectionRecords.map((rec, idx) => (
+                    <tr key={idx} className="text-center hover:bg-gray-50">
+                      <td className="border border-gray-200 px-2 py-1">
+                        {idx + 1}
+                      </td>
+                      <td className="border border-gray-200 px-2 py-1">
+                        {rec.a.toFixed(6)}
+                      </td>
+                      <td className="border border-gray-200 px-2 py-1">
+                        {rec.b.toFixed(6)}
+                      </td>
+                      <td className="border border-gray-200 px-2 py-1 font-medium">
+                        {rec.c.toFixed(6)}
+                      </td>
+                      <td className="border border-gray-200 px-2 py-1">
+                        {evaluate(fx, { x: rec.c }).toFixed(6)}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
 
             {/* Graph */}
             <PlotlyGraph
-              func={func}
-              a={parseFloat(x0)}
-              b={parseFloat(x1)}
+              dataX={dataX}
+              dataY={dataY}
+              graphName="Bisection Method"
               iterations={bisectionRecords}
-              lineMode="last"  // ให้เส้นหยุดที่ c สุดท้าย ไม่ทะลุไปต่อ
+              fx={fx}
             />
           </div>
         )}

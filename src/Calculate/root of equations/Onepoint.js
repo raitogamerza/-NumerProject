@@ -1,6 +1,6 @@
 import {evaluate} from 'mathjs';
 
-export function onePointIteration(gx, x0, tol = 0.000001, maxIter = 1000) {
+export function onePointIteration(gx, x0, tol, maxIter = 1000) {
   let x = parseFloat(x0);
   const tolerance = parseFloat(tol);
   let iter = 0;
@@ -11,16 +11,19 @@ export function onePointIteration(gx, x0, tol = 0.000001, maxIter = 1000) {
   }
   
 
-  let xNew;
+  let xNew,error;
   do {
-    xNew = evaluate(gx, { x }); // คำนวณ g(x)
+    xNew = evaluate(gx, { x });
+    error = Math.abs(xNew - x) /  xNew;
     records.push({ iter: iter + 1, xOld: x, xNew, error: Math.abs(xNew - x) });
-
-    if (Math.abs(xNew - x) < tolerance) break; // หยุดเมื่อเข้าใกล้ root
 
     x = xNew;
     iter++;
-  } while (iter < maxIter);
+  } while (iter < maxIter && error > tolerance);
 
-  return { root: xNew, iterations: iter + 1, records };
+  if (iter >= maxIter && error > tolerance) {
+    throw new Error('ไม่ลู่เข้าในจำนวนรอบที่กำหนด');
+  }
+
+  return { root: xNew, iterations: iter , records };
 }

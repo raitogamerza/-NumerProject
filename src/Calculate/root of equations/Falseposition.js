@@ -1,6 +1,6 @@
 import { evaluate } from 'mathjs';
 
-export function FalsepositionMethod(fx, x0, x1, tol = 0.000001, maxIter = 1000) {
+export function FalsepositionMethod(fx, x0, x1, tol , maxIter = 1000) {
     let xl = parseFloat(x0);
     let xr = parseFloat(x1);
     const tolerance = parseFloat(tol);

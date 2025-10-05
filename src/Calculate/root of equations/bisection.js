@@ -3,7 +3,7 @@ import { evaluate } from 'mathjs';
 // บันทึก error ต่อรอบ: ใช้สองแบบ
 //   errApprox = |c_k - c_{k-1}| (เริ่มรอบแรก = null)
 //   errFunc   = |f(c_k)|
-export function bisectionMethod(fx, x0, x1, tol = 0.000001, maxIter = 1000) {
+export function bisectionMethod(fx, x0, x1, tol , maxIter = 1000) {
   let xl = parseFloat(x0);
   let xr = parseFloat(x1);
   const tolerance = parseFloat(tol);
