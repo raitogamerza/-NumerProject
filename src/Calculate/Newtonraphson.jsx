@@ -1,7 +1,7 @@
 import React from "react";
 import { NewtonraphsonMethod } from "./root of equations/Newtonraphson";
 import { evaluate } from "mathjs";
-import PlotlyGraph from "../components/PlotlyGraph";
+import NewtonGraph from "../components/Newton-RaphsonGraph";
 
 function Newtonraphson() {
   const [fx, setFx] = React.useState("x*x - 7");
@@ -10,6 +10,7 @@ function Newtonraphson() {
   const [root, setRoot] = React.useState(null);
   const [iterations, setIterations] = React.useState(null);
   const [newtonraphsonRecords, setNewtonraphsonRecords] = React.useState([]);
+  
 
   const handleCalculate = () => {
     try {
@@ -22,17 +23,10 @@ function Newtonraphson() {
     }
   };
 
-  const dataX = [];
-  const dataY = [];
-  const step = 0.1;
-  for (let x = parseFloat(x0) - 10; x <= parseFloat(x0) + 10; x += step) {
-    dataX.push(x);
-    dataY.push(evaluate(fx, { x }));
-  }
   return (
     <div>
       <center>
-        <h1 className="text-2xl">Newton-Raphson Method </h1>
+        <h1 className="text-2xl font-bold mb-4">Newton-Raphson Method </h1>
 
         <input
           type="text"
@@ -113,12 +107,10 @@ function Newtonraphson() {
               </table>
             </div>
 
-            <PlotlyGraph
-              dataX={dataX}
-              dataY={dataY}
-              graphName={"Newton-Raphson Method"}
+            <NewtonGraph
               iterations={newtonraphsonRecords}
               fx={fx}
+              graphName="Newton-Raphson Method"
             />
           </div>
         )}

@@ -56,7 +56,7 @@ function Onepoint() {
   return (
     <div>
       <center>
-        <h1 className="text-2xl">One-Point Iteration Method </h1>
+        <h1 className="text-2xl font-bold mb-4">One-Point Iteration Method </h1>
 
         <input
           type="text"

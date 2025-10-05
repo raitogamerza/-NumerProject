@@ -39,7 +39,7 @@ function Graphical() {
   return (
     <div>
       <center>
-        <h1 className="text-2xl">Graphical Method</h1>
+        <h1 className="text-2xl font-bold mb-4">Graphical Method</h1>
 
         <input
           type="text"

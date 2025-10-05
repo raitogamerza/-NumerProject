@@ -1,7 +1,7 @@
 import React from "react";
 import { SecantMethod } from "./root of equations/Secant";
 import { evaluate } from "mathjs";
-import PlotlyGraph from "../components/PlotlyGraph";
+import SecantGraph from "../components/SecantGraph";
 
 function Secant() {
   const [fx, setFx] = React.useState("x*x - 7");
@@ -11,31 +11,46 @@ function Secant() {
   const [root, setRoot] = React.useState(null);
   const [iterations, setIterations] = React.useState(null);
   const [secantRecords, setSecantRecords] = React.useState([]);
+  const [dataX, setDataX] = React.useState([]);
+  const [dataY, setDataY] = React.useState([]);
+  const [fxStable, setFxStable] = React.useState("x*x - 7");
+  const [plotRev, setPlotRev] = React.useState(0);
 
   const handleCalculate = () => {
     try {
-      const { root, iterations, records } = SecantMethod(fx, x0, x1, tol);
+      const fxLocal = fx;             
+      setFxStable(fxLocal);
+
+      const { root, iterations, records } = SecantMethod(fxLocal, x0, x1, tol);
       setRoot(root);
       setIterations(iterations);
       setSecantRecords(records);
+
+      const xs = records.flatMap(r => [r.xPrev, r.xCurr]).filter(Number.isFinite);
+      const baseX = parseFloat(x0) || 0;
+      let minX = xs.length ? Math.min(...xs) : baseX;
+      let maxX = xs.length ? Math.max(...xs) : baseX;
+      if (minX === maxX) { minX -= 1; maxX += 1; }
+
+      const step = Math.max(1e-3, maxX - minX) / 100;
+      const tempX = Array.from({ length: 101 }, (_, i) => minX + i * step);
+      const tempY = tempX.map(x => {
+        try { return evaluate(fxLocal, { x }); } catch { return NaN; }
+      });
+
+      setDataX(tempX);
+      setDataY(tempY);
+      setPlotRev(r => r + 1);          
     } catch (error) {
       alert(error.message);
     }
   };
 
-  const dataX = [];
-  const dataY = [];
-  const step = 0.1;
-  for (let x = parseFloat(x0) ; x <= parseFloat(x1); x += step) {
-    dataX.push(x);
-    dataY.push(evaluate(fx, { x }));
-  }
-
   return (
     <div>
       <center>
-        <h1 className="text-2xl">Secant Method </h1>
-
+        <h1 className="text-2xl font-bold mb-4">Secant Method</h1>
+        {/* Inputs */}
         <input
           type="text"
           placeholder="Enter function f(x)"
@@ -44,33 +59,36 @@ function Secant() {
           className="border p-2 m-2 w-64"
         />
         <input
-          type="Number"
+          type="number"
           placeholder="Enter x0"
           value={x0}
           onChange={(e) => setX0(e.target.value)}
           className="border p-2 m-2 w-32"
         />
         <input
-          type="Number"
+          type="number"
           placeholder="Enter x1"
           value={x1}
           onChange={(e) => setX1(e.target.value)}
           className="border p-2 m-2 w-32"
         />
         <input
-          type="Number"
+          type="number"
           placeholder="Enter tolerance"
           value={tol}
           onChange={(e) => setTol(e.target.value)}
           className="border p-2 m-2 w-32"
         />
+
         <br />
         <button
           onClick={handleCalculate}
-          className="bg-blue-500 text-white px-4 py-2 m-2 rounded"
+          className="bg-blue-500 text-white px-4 py-2 m-2 rounded hover:bg-blue-600"
         >
           Calculate
         </button>
+
+        {/* Result */}
         <div className="mt-4">
           <h2 className="text-xl">Result:</h2>
           {root !== null && (
@@ -80,55 +98,47 @@ function Secant() {
             </div>
           )}
         </div>
+
+        {/* Table + Graph */}
         {secantRecords.length > 0 && (
           <div className="mt-6 w-11/12 md:w-5/6">
-            <h2 className="text-xl mb-2">Iterations Table:</h2>
+            <h2 className="text-xl mb-2 font-semibold">Iterations Table:</h2>
             <div className="max-h-72 overflow-y-auto border border-gray-300 rounded shadow-sm">
-              <table className="min-w-full border-collapse ">
+              <table className="min-w-full border-collapse">
                 <thead className="sticky top-0 bg-gray-100 shadow text-sm">
                   <tr>
-                    <th className="border border-gray-300 px-2 py-1">
-                      Iteration
-                    </th>
-                    <th className="border border-gray-300 px-2 py-1">x0</th>
-                    <th className="border border-gray-300 px-2 py-1">x1</th>
-                    <th className="border border-gray-300 px-2 py-1">f(x0)</th>
-                    <th className="border border-gray-300 px-2 py-1">f(x1)</th>
+                    <th className="border border-gray-300 px-2 py-1">Iteration</th>
+                    <th className="border border-gray-300 px-2 py-1">xₙ₋₁</th>
+                    <th className="border border-gray-300 px-2 py-1">xₙ</th>
+                    <th className="border border-gray-300 px-2 py-1">f(xₙ₋₁)</th>
+                    <th className="border border-gray-300 px-2 py-1">f(xₙ)</th>
                     <th className="border border-gray-300 px-2 py-1">Error</th>
                   </tr>
                 </thead>
                 <tbody>
                   {secantRecords.map((record, index) => (
                     <tr key={index} className="text-center hover:bg-gray-50">
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.iter}
-                      </td>
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.xPrev.toFixed(6)}
-                      </td>
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.xCurr.toFixed(6)}
-                      </td>
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.fPrev.toFixed(6)}
-                      </td>
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.fCurr.toFixed(6)}
-                      </td>
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.error.toFixed(6)}
-                      </td>
+                      <td className="border border-gray-200 px-2 py-1">{record.iter}</td>
+                      <td className="border border-gray-200 px-2 py-1">{record.xPrev.toFixed(6)}</td>
+                      <td className="border border-gray-200 px-2 py-1">{record.xCurr.toFixed(6)}</td>
+                      <td className="border border-gray-200 px-2 py-1">{record.fPrev.toFixed(6)}</td>
+                      <td className="border border-gray-200 px-2 py-1">{record.fCurr.toFixed(6)}</td>
+                      <td className="border border-gray-200 px-2 py-1">{record.error.toFixed(6)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <PlotlyGraph
+
+            {/* Graph */}
+            <SecantGraph
+              key={`secant-${plotRev}`}
+              fx={fxStable}
               dataX={dataX}
               dataY={dataY}
-              graphName={"Secant Method"}
-              iterations={secantRecords}
-              fx={fx}
+              graphName="Secant Method"
+              secantRecords={secantRecords}
+              uiRevision={`secant-${plotRev}`}
             />
           </div>
         )}
