@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { matrixInvert } from './Linear algebra equation/Matrix inversion';
 
-function MatrixInversion() {
+
+function GaussJordan() {
   const [n, setN] = React.useState(3);
   const [eps, setEps] = React.useState("0.000001");
   const [A, setA] = React.useState(() => Array.from({ length: 3 }, () => Array(3).fill("")));
@@ -53,7 +53,7 @@ function MatrixInversion() {
 
   const handleCalculate = () => {
     try{
-      const { detA, X, singular } = matrixInvert(A, B, eps);
+      const { detA, X, singular } = gaussEliminationMethod(A, B, eps);
       if (singular) {
         alert("det(A) = 0 หรือใกล้ศูนย์ ระบบสมการอาจไม่มีคำตอบเอกลักษณ์");
         setX(null);
@@ -105,7 +105,7 @@ function MatrixInversion() {
   return (
     <div className='w-full flex justify-center'>
       <div className='w-full max-w-7xl p-4'>
-        <h1 className = "text-2xl font-bold mb-4 text-center">Matrix Inversion</h1>
+        <h1 className = "text-2xl font-bold mb-4 text-center">Gauss Jordan</h1>
         
         <div className ='flex flex-wrap items-center gap-3 justify-center mb-4'>
           <div className='flex items-center gap-2'>
@@ -185,4 +185,4 @@ function MatrixInversion() {
   );
 }
 
-export default MatrixInversion
+export default GaussJordan;

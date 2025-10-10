@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect,useState } from "react";
 import { CameruleMethod } from "./Linear algebra equation/Cameruler";
 
 function Camerule() {
@@ -8,11 +8,11 @@ function Camerule() {
   const [B, setB] = useState(() => Array(3).fill(""));
   const [X, setX] = useState(null); 
   const [detA, setDetA] = useState(null);
-  const decimals = useMemo(() => {
+  const decimals = (() => {
     const m = String(eps).match(/0\.(0*)([1-9])/);
     if (!m) return 6;
     return m[1].length + 1;
-  }, [eps]);
+  })([eps]);
 
   useEffect(() => {
     const N = Math.max(1, Math.min(8, Number(n) || 1));
@@ -47,11 +47,6 @@ function Camerule() {
     setB(Array(n).fill(""));
     setX(null);
     setDetA(null);
-  };
-
-  const toNum = (v) => {
-    const num = Number(v);
-    return Number.isFinite(num) ? num : NaN;
   };
 
   const handleCalculate = () => {
@@ -139,7 +134,7 @@ function Camerule() {
             className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
             title="Reset"
           >
-            ↻
+            Reset All
           </button>
           <button
             onClick={handleCalculate}
@@ -152,15 +147,15 @@ function Camerule() {
         {/* Labels */}
         <div className="text-center text-gray-600 mb-2 flex items-center justify-center gap-8">
           <span className="italic">[A]</span>
-          <span className="italic">{'{x}'}</span>
+          <span className="italic">[X]</span>
           <span>=</span>
-          <span className="italic">{'{B}'}</span>
+          <span className="italic">[B]</span>
         </div>
 
         {/* Matrices */}
         <div className="flex flex-wrap items-start justify-center gap-6 mb-6">
           {renderMatrixA()}
-          {renderVector(Array(n).fill("").map((_, i) => `x${i+1}`), () => {}, "x")}
+          {renderVector(Array(n).fill(""), () => {}, "x")}
           <span className="text-2xl mt-14">=</span>
           {renderVector(B, handleBChange, "b")}
         </div>
@@ -173,9 +168,9 @@ function Camerule() {
           )}
           {Array.isArray(X) ? (
             <div className="grid gap-2 md:grid-cols-3">
-              {X.map((v, i) => (
+              {X.map((val, i) => (
                 <div key={i} className="border rounded px-3 py-2 bg-white shadow-sm">
-                  x{i + 1} = {Number.isFinite(v) ? v.toFixed(decimals) : "NaN"}
+                  x{i + 1} = {Number.isFinite(val) ? val.toFixed(decimals) : "NaN"}
                 </div>
               ))}
             </div>
