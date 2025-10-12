@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { evaluate } from "mathjs";
 import { onePointIteration } from "./root of equations/Onepoint";
 import OnePointGraph from "../components/OnepointGraph";
+import { getRandomProblem } from "../services/problems";
 
 function Onepoint() {
   const [gx, setGx] = React.useState("0.5*(x+5)");
@@ -23,6 +24,23 @@ function Onepoint() {
       setPlotRev((r) => r + 1);
     } catch (err) {
       alert(err.message);
+    }
+  };
+
+  const handleExample = async () => {
+    try {
+      const p = await getRandomProblem("One-Point");
+      if (p.gx) {
+        setGx(String(p.gx));
+        setGxInput(String(p.gx));
+      } else if (p.fx) {
+        setGx(String(p.fx));
+        setGxInput(String(p.fx));
+      }
+      if (p.x0 !== undefined) setX0(String(p.x0));
+      if (p.tolerance !== undefined) setTol(String(p.tolerance));
+    } catch (err) {
+      alert(err.message || "Failed to load example");
     }
   };
 
@@ -85,6 +103,12 @@ function Onepoint() {
           className="bg-blue-500 text-white px-4 py-2 m-2 rounded"
         >
           Calculate
+        </button>
+        <button
+          onClick={handleExample}
+          className="bg-emerald-500 text-white px-4 py-2 m-2 rounded"
+        >
+          Example
         </button>
         <div className="mt-4">
           <h2 className="text-xl">Result:</h2>

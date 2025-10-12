@@ -2,6 +2,7 @@ import React from "react";
 import { evaluate } from "mathjs";
 import { bisectionMethod } from "./root of equations/bisection";
 import PlotlyGraph from "../components/PlotlyGraph";
+import { getRandomProblem } from "../services/problems";
 
 function Bisection() {
   const [fx, setFx] = React.useState("43x-180");
@@ -22,7 +23,19 @@ function Bisection() {
       alert(err.message);
     }
   };
-  
+
+  const handleExample = async () => {
+    try {
+      const p = await getRandomProblem("Bisection");
+      if (p.fx) setFx(String(p.fx));
+      if (p.x0 !== undefined) setX0(String(p.x0));
+      if (p.x1 !== undefined) setX1(String(p.x1));
+      if (p.tolerance !== undefined) setTol(String(p.tolerance));
+    } catch (err) {
+      alert(err.message || "Failed to load example");
+    }
+  };
+
   const dataX = [];
   const dataY = [];
   const step = 0.1
@@ -71,6 +84,12 @@ function Bisection() {
           className="bg-blue-500 text-white px-4 py-2 m-2 rounded"
         >
           Calculate
+        </button>
+        <button
+          onClick={handleExample}
+          className="bg-emerald-500 text-white px-4 py-2 m-2 rounded"
+        >
+          Example
         </button>
 
         <div className="mt-4">

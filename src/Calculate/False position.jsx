@@ -2,6 +2,7 @@ import React from "react";
 import { evaluate } from "mathjs";
 import { FalsepositionMethod } from "./root of equations/Falseposition";
 import PlotlyGraph from "../components/PlotlyGraph";
+import { getRandomProblem } from "../services/problems";
 
 function Falseposition() {
   const [fx, setFx] = React.useState("x*x-13");
@@ -25,6 +26,18 @@ function Falseposition() {
       setFalsepositionRecords(records);
     } catch (err) {
       alert(err.message);
+    }
+  };
+
+  const handleExample = async () => {
+    try {
+      const p = await getRandomProblem("False Position");
+      if (p.fx) setFx(String(p.fx));
+      if (p.x0 !== undefined) setX0(String(p.x0));
+      if (p.x1 !== undefined) setX1(String(p.x1));
+      if (p.tolerance !== undefined) setTol(String(p.tolerance));
+    } catch (err) {
+      alert(err.message || "Failed to load example");
     }
   };
 
@@ -75,6 +88,12 @@ function Falseposition() {
           className="bg-blue-500 text-white px-4 py-2 m-2 rounded"
         >
           Calculate
+        </button>
+        <button
+          onClick={handleExample}
+          className="bg-emerald-500 text-white px-4 py-2 m-2 rounded"
+        >
+          Example
         </button>
         <div className="mt-4">
           <h2 className="text-xl">Result:</h2>

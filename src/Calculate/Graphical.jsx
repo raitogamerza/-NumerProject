@@ -2,6 +2,7 @@ import React from "react";
 import { evaluate } from "mathjs";
 import PlotlyGraph from "../components/PlotlyGraph";
 import { graphicalMethod } from "./root of equations/Graphical";
+import { getRandomProblem } from "../services/problems";
 
 function Graphical() {
   const [fx, setFx] = React.useState("43x-180");
@@ -21,6 +22,18 @@ function Graphical() {
       setGraphicalRecords(records);
     } catch (err) {
       alert(err.message);
+    }
+  };
+
+  const handleExample = async () => {
+    try {
+      const p = await getRandomProblem("Graphical");
+      if (p.fx) setFx(String(p.fx));
+      if (p.start !== undefined) setStart(String(p.start));
+      if (p.end !== undefined) setFinish(String(p.end));
+      if (p.tolerance !== undefined) setTol(String(p.tolerance));
+    } catch (err) {
+      alert(err.message || "Failed to load example");
     }
   };
 
@@ -75,6 +88,12 @@ function Graphical() {
           className="bg-blue-500 text-white px-4 py-2 m-2 rounded"
         >
           Calculate
+        </button>
+        <button
+          onClick={handleExample}
+          className="bg-emerald-500 text-white px-4 py-2 m-2 rounded"
+        >
+          Example
         </button>
         <div className="mt-4">
           <h2 className="text-xl">Result:</h2>

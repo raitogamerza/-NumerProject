@@ -2,6 +2,7 @@ import React from "react";
 import { NewtonraphsonMethod } from "./root of equations/Newtonraphson";
 import { evaluate } from "mathjs";
 import NewtonGraph from "../components/Newton-RaphsonGraph";
+import { getRandomProblem } from "../services/problems";
 
 function Newtonraphson() {
   const [fx, setFx] = React.useState("x*x - 7");
@@ -20,6 +21,17 @@ function Newtonraphson() {
       setNewtonraphsonRecords(records);
     } catch (error) {
       alert(error.message);
+    }
+  };
+
+  const handleExample = async () => {
+    try {
+      const p = await getRandomProblem("Newton-Raphson");
+      if (p.fx) setFx(String(p.fx));
+      if (p.x0 !== undefined) setX0(String(p.x0));
+      if (p.tolerance !== undefined) setTol(String(p.tolerance));
+    } catch (err) {
+      alert(err.message || "Failed to load example");
     }
   };
 
@@ -55,6 +67,12 @@ function Newtonraphson() {
           className="bg-blue-500 text-white px-4 py-2 m-2 rounded"
         >
           Calculate
+        </button>
+        <button
+          onClick={handleExample}
+          className="bg-emerald-500 text-white px-4 py-2 m-2 rounded"
+        >
+          Example
         </button>
         <h2 className="text-xl">Result:</h2>
         {root !== null && (
