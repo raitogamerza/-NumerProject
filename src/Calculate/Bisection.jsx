@@ -22,7 +22,7 @@ function Bisection() {
       alert(err.message);
     }
   };
-
+  
   const dataX = [];
   const dataY = [];
   const step = 0.1
