@@ -2,7 +2,7 @@ import React from "react";
 import { evaluate } from "mathjs";
 import PlotlyGraph from "../components/PlotlyGraph";
 import { graphicalMethod } from "./root of equations/Graphical";
-import { getRandomProblem } from "../services/problems";
+import { getRandomProblem } from "../services/rootproblems";
 
 function Graphical() {
   const [fx, setFx] = React.useState("43x-180");

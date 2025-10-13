@@ -2,7 +2,7 @@ import React from "react";
 import { SecantMethod } from "./root of equations/Secant";
 import { evaluate } from "mathjs";
 import SecantGraph from "../components/SecantGraph";
-import { getRandomProblem } from "../services/problems";
+import { getRandomProblem } from "../services/rootproblems";
 
 function Secant() {
   const [fx, setFx] = React.useState("x*x - 7");

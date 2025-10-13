@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { gaussJordanMethod } from './Linear algebra equation/Gauss Jordan';
 
 
 function GaussJordan() {
@@ -53,7 +54,7 @@ function GaussJordan() {
 
   const handleCalculate = () => {
     try{
-      const { detA, X, singular } = gaussEliminationMethod(A, B, eps);
+      const { detA, X, singular } = gaussJordanMethod(A, B, eps);
       if (singular) {
         alert("det(A) = 0 หรือใกล้ศูนย์ ระบบสมการอาจไม่มีคำตอบเอกลักษณ์");
         setX(null);

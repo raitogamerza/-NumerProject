@@ -139,8 +139,7 @@ function Navbar() {
                   <li><Link to="/MatrixInversion" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Matrix Inversion</Link></li>
                   <li><Link to="/GaussElimination" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Gaussian Elimination</Link></li>
                   <li><Link to="/GaussJordan" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Gauss-Jordan</Link></li>
-                  <li><Link to="/LU" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">LU Decomposition</Link></li>
-                  <li><Link to="/Cholesky" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Cholesky</Link></li>
+                  <li><Link to="/LUDecomposition" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">LU Decomposition</Link></li>
                   <li><Link to="/Jacobi" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Jacobi Iteration</Link></li>
                   <li><Link to="/GaussSeidel" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Gauss-Seidel</Link></li>
                   <li><Link to="/ConjugateGradient" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Conjugate Gradient</Link></li>

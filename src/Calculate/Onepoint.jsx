@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { evaluate } from "mathjs";
 import { onePointIteration } from "./root of equations/Onepoint";
 import OnePointGraph from "../components/OnepointGraph";
-import { getRandomProblem } from "../services/problems";
+import { getRandomProblem } from "../services/rootproblems";
 
 function Onepoint() {
   const [gx, setGx] = React.useState("0.5*(x+5)");

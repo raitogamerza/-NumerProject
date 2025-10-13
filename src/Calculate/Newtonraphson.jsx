@@ -2,7 +2,7 @@ import React from "react";
 import { NewtonraphsonMethod } from "./root of equations/Newtonraphson";
 import { evaluate } from "mathjs";
 import NewtonGraph from "../components/Newton-RaphsonGraph";
-import { getRandomProblem } from "../services/problems";
+import { getRandomProblem } from "../services/rootproblems";
 
 function Newtonraphson() {
   const [fx, setFx] = React.useState("x*x - 7");

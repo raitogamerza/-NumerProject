@@ -2,7 +2,7 @@ import React from "react";
 import { evaluate } from "mathjs";
 import { bisectionMethod } from "./root of equations/bisection";
 import PlotlyGraph from "../components/PlotlyGraph";
-import { getRandomProblem } from "../services/problems";
+import { getRandomProblem } from "../services/rootproblems";
 
 function Bisection() {
   const [fx, setFx] = React.useState("43x-180");

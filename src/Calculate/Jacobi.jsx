@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
-import { gaussEliminationMethod } from './Linear algebra equation/Gauss Ellimination';
+import { jacobiMethod } from './Linear algebra equation/Jacobi';
 
-
-function GaussElimination() {
+function GaussSeidel() {
   const [n, setN] = React.useState(3);
   const [eps, setEps] = React.useState("0.000001");
   const [A, setA] = React.useState(() => Array.from({ length: 3 }, () => Array(3).fill("")));
   const [B, setB] = React.useState(() => Array(3).fill(""));
   const [X, setX] = React.useState(null);
+  const [X0, setX0] = React.useState(() => Array(3).fill("0"));
   const [detA, setDetA] = React.useState(null);
+  const [jbRecords, setJbRecords] = React.useState([]);
   const decimals = (() => {
     const m = String(eps).match(/0\.(0*)([1-9])/);
     if (!m) return 6;
@@ -23,15 +24,17 @@ function GaussElimination() {
       );
       return next;
     });
-    setB((prev) => Array.from({ length: N }, (_, i) => (prev[i] ?? "")));
+    setB((prev) => Array.from({ length: N }, (_, i) => (prev[i] ?? ""))); 
+    setX0((prev) => Array.from({ length: N }, (_, i) => (prev[i] ?? "0")));
     setX(null);
     setDetA(null);
   }, [n]);
 
-  
+
   const resetAll = () => {
     setA(Array.from({ length: n }, () => Array(n).fill("")));
     setB(Array(n).fill(""));
+    setX0(Array(n).fill(""));
     setX(null);
     setDetA(null);
   };
@@ -52,16 +55,26 @@ function GaussElimination() {
     });
   }
 
+  const handleX0Change = (i, val) => {
+    setX0((prev) => {
+      const next = prev.slice();
+      next[i] = val;
+      return next;
+    });
+  };
+
   const handleCalculate = () => {
     try{
-      const { detA, X, singular } = gaussEliminationMethod(A, B, eps);
+      const { detA, X, singular, iterations } = jacobiMethod(A, B, X0, eps);
       if (singular) {
         alert("det(A) = 0 หรือใกล้ศูนย์ ระบบสมการอาจไม่มีคำตอบเอกลักษณ์");
         setX(null);
+        setGsRecords([]);
         return;
       }
       setDetA(detA);
       setX(X);
+      setJbRecords(Array.isArray(iterations) ? iterations : []);
     } catch (e) {
       alert(e.message);
     }
@@ -106,7 +119,7 @@ function GaussElimination() {
   return (
     <div className='w-full flex justify-center'>
       <div className='w-full max-w-7xl p-4'>
-        <h1 className = "text-2xl font-bold mb-4 text-center">Gauss Elimination</h1>
+        <h1 className = "text-2xl font-bold mb-4 text-center">Jacobi</h1>
         
         <div className ='flex flex-wrap items-center gap-3 justify-center mb-4'>
           <div className='flex items-center gap-2'>
@@ -160,30 +173,74 @@ function GaussElimination() {
           {renderVector(B,handleBChange,"b")}
         </div>
 
-        {/* Result */}
-        <div className='mt-4'>
-          <h2 className='text-lg font-semibold mb-2'>Result:</h2>
-          {detA !== null && (
-            <p className='text-sm text-gray-700 mb-2'>det(A) = {Number.isFinite(detA) ? detA.toFixed(decimals) : "NaN"}</p>
-          )}
-          {Array.isArray(X) && X.length > 0 ? (
-            <div className='grid gap-2 md:grid-cols-3'>
-             {X.map((val, idx) => {
-               const num = Number(val);
-               return (
-                 <div key={idx} className='border rounded px-3 py-2 bg-white shadow-sm'>
-                   x{idx + 1} = {Number.isFinite(num) ? num.toFixed(decimals) : "NaN"}
-                 </div>
-               );
-             })}
-            </div>
-          ) : (
-            <p className="text-gray-500">กรอกข้อมูลแล้วกด Calculate เพื่อดูผลลัพธ์</p>
-          )}
+        <div className='flex flex-col items-center mt-2'>
+            <span className='italic mb-1'>{'[X0]'}</span>
+            <div className='grid gap-2' style={{ gridTemplateColumns: `repeat(${n}, 80px)` }}>
+            {X0.map((val, i) => (
+            <input
+            key={i}
+            type="number"
+            step="any"
+            placeholder={`x${i+1}`}
+            value={val}
+            onChange={(e) => handleX0Change(i, e.target.value)}
+            className="border rounded px-2 py-1 text-center w-20"
+            />
+        ))}
+         </div>
         </div>
+
+        {/* Result summary removed per request */}
+        
+        <h2 className='meta-4 text-lg font-semibold mb-2'>Result:</h2>
+
+            {/* Iterations Table */}
+            {Array.isArray(jbRecords) && jbRecords.length > 0 && (
+          <div className='mt-6 w-11/12 md:w-5/6'>
+            <h2 className='text-lg font-bold mb-2'>Iterations Table</h2>
+            <div className='max-h-72 overflow-y-auto border border-gray-300 rounded shadow-sm'>
+              <table className='min-w-full border-collapse text-sm'>
+                <thead className='sticky top-0 bg-gray-100 shadow'>
+                  <tr>
+                    <th className='border border-gray-300 px-2 py-1'>iteration</th>
+                    {Array.from({ length: n }, (_, j) => (
+                      <th key={`h-${j}`} className='border border-gray-300 px-2 py-1'>x{j + 1}</th>
+                    ))}
+                    <th className='border border-gray-300 px-2 py-1'>Error</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {jbRecords.map((vec, idx) => {
+                    const prev = idx > 0 ? jbRecords[idx - 1] : null;
+                    let err = '-';
+                    if (prev && Array.isArray(prev)) {
+                      const diffs = vec.map((v, j) => Math.abs(Number(v) - Number(prev[j])));
+                      const maxDiff = diffs.reduce((m, d) => (Number.isFinite(d) && d > m ? d : m), 0);
+                      err = Number.isFinite(maxDiff) ? maxDiff.toFixed(decimals) : 'NaN';
+                    }
+                    return (
+                      <tr key={idx} className='text-center hover:bg-gray-50'>
+                        <td className='border border-gray-200 px-2 py-1'>{idx + 1}</td>
+                        {Array.from({ length: n }, (_, j) => {
+                          const val = Number(vec[j]);
+                          return (
+                            <td key={`r-${idx}-${j}`} className='border border-gray-200 px-2 py-1'>
+                              {Number.isFinite(val) ? val.toFixed(decimals) : 'NaN'}
+                            </td>
+                          );
+                        })}
+                        <td className='border border-gray-200 px-2 py-1'>{err}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-export default GaussElimination;
+export default GaussSeidel;

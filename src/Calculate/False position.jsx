@@ -2,7 +2,7 @@ import React from "react";
 import { evaluate } from "mathjs";
 import { FalsepositionMethod } from "./root of equations/Falseposition";
 import PlotlyGraph from "../components/PlotlyGraph";
-import { getRandomProblem } from "../services/problems";
+import { getRandomProblem } from "../services/rootproblems";
 
 function Falseposition() {
   const [fx, setFx] = React.useState("x*x-13");

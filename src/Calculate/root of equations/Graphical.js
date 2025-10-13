@@ -46,4 +46,4 @@ export function graphicalMethod(fx, a, b, step = 0.1) {
     iterations: records.length,
     records,
   };
-}
+} 

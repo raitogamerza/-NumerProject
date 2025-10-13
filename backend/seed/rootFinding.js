@@ -48,34 +48,14 @@ const allProblemData = [
     { id: 5, method: "Graphical", fx: "x^2 - 16", start: -5, end: 5, tolerance: 0.000001 }
 ];
 
-// Function to assign Ids starting from 1 for each method
-const assignIdsByMethod = (data) => {
-  const grouped = {};
-  data.forEach(item => {
-    if (!grouped[item.method]) grouped[item.method] = [];
-    grouped[item.method].push(item);
-  });
-
-  const result = [];
-  Object.keys(grouped).forEach(method => {
-    grouped[method].forEach((item, index) => {
-      result.push({
-        ...item,
-        Id: index + 1, // Start from 1 for each method
-      });
-    });
-  });
-
-  return result;
-};
-
-const allProblemDataWithIds = assignIdsByMethod(allProblemData);
-
 // 3. ฟังก์ชัน seedDB
 const seedDB = async () => {
     try {
     await mongoose.connect(process.env.MONGODB_URI);
         console.log('MongoDB Connected!');
+
+        // Ensure indexes are up to date (drop old unique on id if any)
+    await Problem.syncIndexes();
 
         // --- A. ล้างข้อมูลเก่า ---
     // ลบข้อมูลทั้งหมดใน Collection 'RootFinding'
@@ -83,8 +63,8 @@ const seedDB = async () => {
         console.log('Existing problem data cleared.');
 
         // --- B. ใส่ข้อมูลใหม่ ---
-    await Problem.insertMany(allProblemDataWithIds);
-         console.log(`✅ Inserted ${allProblemDataWithIds.length} problems`);
+    await Problem.insertMany(allProblemData);
+         console.log(`✅ Inserted ${allProblemData.length} problems`);
 
     await mongoose.connection.close();
         console.log('MongoDB Connection Closed.');
