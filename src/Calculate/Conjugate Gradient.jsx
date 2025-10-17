@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { conjugateGradientMethod } from './Linear algebra equation/Conjugate Gradient';
 
-function GaussSeidel() {
+function ConjugateGradient() {
   const [n, setN] = React.useState(3);
   const [eps, setEps] = React.useState("0.000001");
   const [A, setA] = React.useState(() => Array.from({ length: 3 }, () => Array(3).fill("")));
@@ -243,4 +243,4 @@ function GaussSeidel() {
   );
 }
 
-export default GaussSeidel;
+export default ConjugateGradient;

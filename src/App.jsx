@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Home from './components/Home'
 
-// Calculate
+// Calculate  
 import Bisection from './Calculate/Bisection'
 import Graphical from './Calculate/Graphical'
 import Falseposition from './Calculate/False position'
@@ -21,6 +21,9 @@ import GaussJordan from './Calculate/Gauss Jordan';
 import GaussSeidel from './Calculate/Guass Seidel';
 import Jacobi from './Calculate/Jacobi';
 import ConjugateGradient from './Calculate/Conjugate Gradient';
+import LinearRegression from './Calculate/Linear Regression';
+import PolynomialRegression from './Calculate/Polynomial Regression';
+import MultipleLinearRegression from './Calculate/Multiple Linear Regression';
 
 
 
@@ -49,6 +52,9 @@ function App() {
           <Route path="gaussseidel" element={<GaussSeidel />} />
           <Route path="jacobi" element={<Jacobi />} />
           <Route path="conjugategradient" element={<ConjugateGradient />} />
+          <Route path="linear-regression" element={<LinearRegression />} />
+          <Route path="polynomial-regression" element={<PolynomialRegression />} />
+          <Route path="multiple-linear-regression" element={<MultipleLinearRegression />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -12,6 +12,16 @@ function Navbar() {
   const [linearDropdownOpen, setLinearDropdownOpen] = useState(false);
   const linearDropdownRef = useRef(null);
 
+  // dropdowns: Interpolation, Extrapolation, Integration, Differentiation
+  const [interpDropdownOpen, setInterpDropdownOpen] = useState(false);
+  const interpDropdownRef = useRef(null);
+  const [extraDropdownOpen, setExtraDropdownOpen] = useState(false);
+  const extraDropdownRef = useRef(null);
+  const [integrDropdownOpen, setIntegrDropdownOpen] = useState(false);
+  const integrDropdownRef = useRef(null);
+  const [diffDropdownOpen, setDiffDropdownOpen] = useState(false);
+  const diffDropdownRef = useRef(null);
+
   useEffect(() => {
     function onDocClick(e) {
       if (rootDropdownRef.current && !rootDropdownRef.current.contains(e.target)) {
@@ -19,6 +29,18 @@ function Navbar() {
       }
       if (linearDropdownRef.current && !linearDropdownRef.current.contains(e.target)) {
         setLinearDropdownOpen(false);
+      }
+      if (interpDropdownRef.current && !interpDropdownRef.current.contains(e.target)) {
+        setInterpDropdownOpen(false);
+      }
+      if (extraDropdownRef.current && !extraDropdownRef.current.contains(e.target)) {
+        setExtraDropdownOpen(false);
+      }
+      if (integrDropdownRef.current && !integrDropdownRef.current.contains(e.target)) {
+        setIntegrDropdownOpen(false);
+      }
+      if (diffDropdownRef.current && !diffDropdownRef.current.contains(e.target)) {
+        setDiffDropdownOpen(false);
       }
     }
     document.addEventListener("click", onDocClick);
@@ -147,11 +169,140 @@ function Navbar() {
               </div>
             </li>
 
-            <li>
-              <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Pricing</a>
+            {/* Interpolation dropdown */}
+            <li className="relative" ref={interpDropdownRef}>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setInterpDropdownOpen((v) => !v);
+                  setExtraDropdownOpen(false);
+                  setIntegrDropdownOpen(false);
+                  setDiffDropdownOpen(false);
+                  setDropdownOpen(false);
+                  setLinearDropdownOpen(false);
+                }}
+                className="flex items-center justify-between w-full py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
+                aria-expanded={interpDropdownOpen}
+                aria-controls="dropdownInterp"
+              >
+                Interpolation
+                <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                </svg>
+              </button>
+              <div
+                id="dropdownInterp"
+                className={`${interpDropdownOpen ? "block" : "hidden"} z-10 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-56 dark:bg-gray-700 dark:divide-gray-600 md:absolute md:left-4 md:top-full md:mt-2`}
+                style={{ minWidth: 220 }}
+              >
+                <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Newton's Divided Difference</a></li>
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Lagrange Interpolation</a></li>
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Spline Interpolation</a></li>
+                </ul>
+              </div>
             </li>
-            <li>
-              <a href="#" className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a>
+
+            {/* Extrapolation dropdown */}
+            <li className="relative" ref={extraDropdownRef}>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExtraDropdownOpen((v) => !v);
+                  setInterpDropdownOpen(false);
+                  setIntegrDropdownOpen(false);
+                  setDiffDropdownOpen(false);
+                  setDropdownOpen(false);
+                  setLinearDropdownOpen(false);
+                }}
+                className="flex items-center justify-between w-full py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
+                aria-expanded={extraDropdownOpen}
+                aria-controls="dropdownExtra"
+              >
+                Extrapolation
+                <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                </svg>
+              </button>
+              <div
+                id="dropdownExtra"
+                className={`${extraDropdownOpen ? "block" : "hidden"} z-10 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-56 dark:bg-gray-700 dark:divide-gray-600 md:absolute md:left-4 md:top-full md:mt-2`}
+                style={{ minWidth: 220 }}
+              >
+                <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
+                  <li><Link to="/linear-regression" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Linear Regression</Link></li>
+                  <li><Link to="/polynomial-regression" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Polynomial Regression</Link></li>
+                  <li><Link to="/multiple-linear-regression" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Multiple Linear Regression</Link></li>
+                </ul>
+              </div>
+            </li>
+
+            {/* Integration dropdown */}
+            <li className="relative" ref={integrDropdownRef}>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIntegrDropdownOpen((v) => !v);
+                  setInterpDropdownOpen(false);
+                  setExtraDropdownOpen(false);
+                  setDiffDropdownOpen(false);
+                  setDropdownOpen(false);
+                  setLinearDropdownOpen(false);
+                }}
+                className="flex items-center justify-between w-full py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
+                aria-expanded={integrDropdownOpen}
+                aria-controls="dropdownIntegr"
+              >
+                Integration
+                <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                </svg>
+              </button>
+              <div
+                id="dropdownIntegr"
+                className={`${integrDropdownOpen ? "block" : "hidden"} z-10 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-56 dark:bg-gray-700 dark:divide-gray-600 md:absolute md:left-4 md:top-full md:mt-2`}
+                style={{ minWidth: 220 }}
+              >
+                <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Trapezoidal Rule</a></li>
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Simpson's Rule</a></li>
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Romberg Integration</a></li>
+                </ul>
+              </div>
+            </li>
+
+            {/* Differentiation dropdown */}
+            <li className="relative" ref={diffDropdownRef}>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDiffDropdownOpen((v) => !v);
+                  setInterpDropdownOpen(false);
+                  setExtraDropdownOpen(false);
+                  setIntegrDropdownOpen(false);
+                  setDropdownOpen(false);
+                  setLinearDropdownOpen(false);
+                }}
+                className="flex items-center justify-between w-full py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
+                aria-expanded={diffDropdownOpen}
+                aria-controls="dropdownDiff"
+              >
+                Differentiation
+                <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                </svg>
+              </button>
+              <div
+                id="dropdownDiff"
+                className={`${diffDropdownOpen ? "block" : "hidden"} z-10 font-normal bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-56 dark:bg-gray-700 dark:divide-gray-600 md:absolute md:left-4 md:top-full md:mt-2`}
+                style={{ minWidth: 220 }}
+              >
+                <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Forward/Backward Difference</a></li>
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Central Difference</a></li>
+                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Richardson Extrapolation</a></li>
+                </ul>
+              </div>
             </li>
           </ul>
         </div>
