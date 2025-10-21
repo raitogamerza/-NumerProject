@@ -24,6 +24,12 @@ import ConjugateGradient from './Calculate/Conjugate Gradient';
 import LinearRegression from './Calculate/Linear Regression';
 import PolynomialRegression from './Calculate/Polynomial Regression';
 import MultipleLinearRegression from './Calculate/Multiple Linear Regression';
+import CompositeTrapezoidal from './Calculate/Composite Trapezoidal';
+import CompositeSimpSon from './Calculate/Composite SimpSon';
+import Trapezoidal from './Calculate/Trapezoidal';
+import Simpsons from './Calculate/Simpson';
+import NumericalDifferentiation from './Calculate/Numerical Differentiation';
+
 
 
 
@@ -55,6 +61,11 @@ function App() {
           <Route path="linear-regression" element={<LinearRegression />} />
           <Route path="polynomial-regression" element={<PolynomialRegression />} />
           <Route path="multiple-linear-regression" element={<MultipleLinearRegression />} />
+          <Route path="compositetrapezoidal" element={<CompositeTrapezoidal />} />
+          <Route path="compositesimpson" element={<CompositeSimpSon />} />
+          <Route path="trapezoidal" element={<Trapezoidal />} />
+          <Route path="simpsons" element={<Simpsons />} />
+          <Route path="numerical-differentiation" element={<NumericalDifferentiation />} />
         </Route>
       </Routes>
     </BrowserRouter>

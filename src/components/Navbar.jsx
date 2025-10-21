@@ -264,9 +264,10 @@ function Navbar() {
                 style={{ minWidth: 220 }}
               >
                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Trapezoidal Rule</a></li>
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Simpson's Rule</a></li>
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Romberg Integration</a></li>
+                  <Link to="/Trapezoidal" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Trapezoidal Rule</Link>
+                  <Link to="/CompositeTrapezoidal" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Composite Trapezoidal Rule</Link>
+                  <Link to="/Simpsons" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Simpson's Rule</Link>
+                  <Link to="/CompositeSimpson" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Composite Simpson's Rule</Link>
                 </ul>
               </div>
             </li>
@@ -298,9 +299,7 @@ function Navbar() {
                 style={{ minWidth: 220 }}
               >
                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-400">
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Forward/Backward Difference</a></li>
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Central Difference</a></li>
-                  <li><a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Richardson Extrapolation</a></li>
+                  <Link to="/numerical-differentiation" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Numerical Differentiation</Link>  
                 </ul>
               </div>
             </li>

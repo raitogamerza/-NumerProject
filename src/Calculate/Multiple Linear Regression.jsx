@@ -189,9 +189,8 @@ function MultiLinearRegression() {
 
       {result && (
         <div className="mt-4 text-center bg-gray-100 p-3 rounded-lg w-[700px]">
-          <p className="font-semibold">ผลลัพธ์ (ไม่โชว์วิธีทำ):</p>
+          <p className="font-semibold">Result:</p>
           <p>yPred = {result.yPred.toFixed(6)}</p>
-          <p>R² = {result.r2.toFixed(4)}</p>
           <p>สมการ (coeffs): {result.coefficients.map((c, i) => (i === 0 ? c.toFixed(4) : ` + (${c.toFixed(4)})x${i}`)).join('')}</p>
         </div>
       )}
