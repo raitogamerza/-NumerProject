@@ -48,21 +48,17 @@ const allProblemData = [
     { id: 5, method: "Graphical", fx: "x^2 - 16", start: -5, end: 5, tolerance: 0.000001 }
 ];
 
-// 3. ฟังก์ชัน seedDB
+
 const seedDB = async () => {
     try {
     await mongoose.connect(process.env.MONGODB_URI);
         console.log('MongoDB Connected!');
-
-        // Ensure indexes are up to date (drop old unique on id if any)
+    
     await Problem.syncIndexes();
 
-        // --- A. ล้างข้อมูลเก่า ---
-    // ลบข้อมูลทั้งหมดใน Collection 'RootFinding'
     await Problem.deleteMany({});
         console.log('Existing problem data cleared.');
 
-        // --- B. ใส่ข้อมูลใหม่ ---
     await Problem.insertMany(allProblemData);
          console.log(`✅ Inserted ${allProblemData.length} problems`);
 
