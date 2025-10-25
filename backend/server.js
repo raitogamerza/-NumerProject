@@ -22,7 +22,7 @@ app.get('/api/problems', async (req, res) => {
     const problems = await Problem.find(filter).sort({ method: 1, id: 1 });
     res.status(200).json(problems);
   } catch (err) {
-    console.error(err.message); 
+    console.error(err.message);
     res.status(500).json({ message: 'Server Error' });
   }
 });
