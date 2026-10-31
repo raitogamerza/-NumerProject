@@ -1,126 +1,78 @@
-import React, { useState } from "react";
-import { evaluate } from "mathjs";
-import { onePointIteration } from "./root of equations/Onepoint";
+import { useState } from "react";
 import OnePointGraph from "../components/OnepointGraph";
-import { getRandomProblem } from "../services/rootproblems";
+import DatabasePanel from "../components/DatabasePanel";
+import useCalculator from "../hooks/useCalculator";
+import { OnePoint, MathFunction } from "../methods";
 
 function Onepoint() {
-  const [gx, setGx] = React.useState("0.5*(x+5)");
-  const [x0, setX0] = React.useState("0");
-  const [tol, setTol] = React.useState("0.000001");
-  const [root, setRoot] = React.useState(null);
-  const [iterations, setIterations] = React.useState(null);
-  const [onepointRecords, setOnepointRecords] = React.useState([]);
-  const [gxInput, setGxInput] = useState(gx);
+  const [gx, setGx] = useState("0.5*(x+5)");
+  const [x0, setX0] = useState("0");
+  const [tol, setTol] = useState("0.000001");
+  const [result, setResult] = useState(null);
+  const [plotGx, setPlotGx] = useState(gx);
   const [plotRev, setPlotRev] = useState(0);
+  const { run, historyVersion } = useCalculator(OnePoint);
+
+  const getInput = () => ({ gx, x0, tol });
+  const loadInput = (input) => {
+    const g = input.gx ?? input.fx;
+    if (g !== undefined) setGx(String(g));
+    if (input.x0 !== undefined) setX0(String(input.x0));
+    if (input.tol !== undefined) setTol(String(input.tol));
+  };
 
   const handleCalculate = () => {
     try {
-      setGx(gxInput);
-      const { root, iterations, records } = onePointIteration(gx, x0, tol);
-      setRoot(root);
-      setIterations(iterations);
-      setOnepointRecords(records);
+      setResult(run(getInput()));
+      setPlotGx(gx);
       setPlotRev((r) => r + 1);
     } catch (err) {
       alert(err.message);
     }
   };
 
-  const handleExample = async () => {
-    try {
-      const p = await getRandomProblem("One-Point");
-      if (p.gx) {
-        setGx(String(p.gx));
-        setGxInput(String(p.gx));
-      } else if (p.fx) {
-        setGx(String(p.fx));
-        setGxInput(String(p.fx));
-      }
-      if (p.x0 !== undefined) setX0(String(p.x0));
-      if (p.tolerance !== undefined) setTol(String(p.tolerance));
-    } catch (err) {
-      alert(err.message || "Failed to load example");
-    }
-  };
+  const records = result?.records ?? [];
 
-  const xs = onepointRecords
-    .flatMap((r) => [r.xOld, r.xNew])
-    .filter((v) => Number.isFinite(v));
-  let baseX = parseFloat(x0);
-  if (!Number.isFinite(baseX)) baseX = 0;
+  // ช่วงกราฟครอบคลุมทุกค่า x ที่เกิดระหว่างทำซ้ำ
+  const xs = records.flatMap((r) => [r.xOld, r.xNew]).filter(Number.isFinite);
+  const baseX = Number.isFinite(parseFloat(x0)) ? parseFloat(x0) : 0;
   let minX = xs.length ? Math.min(...xs) : baseX;
   let maxX = xs.length ? Math.max(...xs) : baseX;
-  if (!Number.isFinite(minX)) minX = baseX;
-  if (!Number.isFinite(maxX)) maxX = baseX;
   if (minX === maxX) {
     minX -= 1;
     maxX += 1;
   }
-  const span = Math.max(1e-3, maxX - minX);
-  const step = span / 100;
-  const dataX = [];
-  const dataY = [];
-  for (let x = minX; x <= maxX + 1e-12; x += step) {
-    dataX.push(x);
-    try {
-      const y = evaluate(gx, { x });
-      dataY.push(Number.isFinite(y) ? y : NaN);
-    } catch (e) {
-      dataY.push(NaN);
-    }
-  }
+  const { xs: dataX, ys: dataY } = MathFunction.trySample(plotGx, minX, maxX, 100);
 
   return (
     <div>
       <center>
-        <h1 className="text-2xl font-bold mb-4">One-Point Iteration Method </h1>
+        <h1 className="text-2xl font-bold mb-4">One-Point Iteration Method</h1>
 
-        <input
-          type="text"
-          placeholder="Enter function g(x)"
-          value={gxInput}
-          onChange={(e) => setGxInput(e.target.value)}
-          className="border p-2 m-2 w-64"
-        />
-        <input
-          type="Number"
-          placeholder="Enter x0"
-          value={x0}
-          onChange={(e) => setX0(e.target.value)}
-          className="border p-2 m-2 w-32"
-        />
-        <input
-          type="Number"
-          placeholder="Enter tolerance"
-          value={tol}
-          onChange={(e) => setTol(e.target.value)}
-          className="border p-2 m-2 w-32"
-        />
+        <input type="text" placeholder="Enter function g(x)" value={gx}
+          onChange={(e) => setGx(e.target.value)} className="border p-2 m-2 w-64" />
+        <input type="number" placeholder="Enter x0" value={x0}
+          onChange={(e) => setX0(e.target.value)} className="border p-2 m-2 w-32" />
+        <input type="number" placeholder="Enter tolerance" value={tol}
+          onChange={(e) => setTol(e.target.value)} className="border p-2 m-2 w-32" />
         <br />
-        <button
-          onClick={handleCalculate}
-          className="bg-blue-500 text-white px-4 py-2 m-2 rounded"
-        >
+        <button onClick={handleCalculate} className="bg-blue-500 text-white px-4 py-2 m-2 rounded">
           Calculate
         </button>
-        <button
-          onClick={handleExample}
-          className="bg-emerald-500 text-white px-4 py-2 m-2 rounded"
-        >
-          Example
-        </button>
+        <DatabasePanel methodName={OnePoint.methodName} getInput={getInput}
+          onLoad={loadInput} historyVersion={historyVersion} />
+
         <div className="mt-4">
           <h2 className="text-xl">Result:</h2>
-          {root !== null && (
+          {result && (
             <>
-              <p>Root: {root.toFixed(6)}</p>
-              <p>Iterations: {iterations}</p>
+              <p>Root: {result.root.toFixed(6)}</p>
+              <p>Iterations: {result.iterations}</p>
             </>
           )}
         </div>
 
-        {onepointRecords.length > 0 && (
+        {records.length > 0 && (
           <div className="mt-6 w-11/12 md:w-5/6">
             <h2 className="text-lg font-bold mb-2">Iterations Table</h2>
             <div className="max-h-96 overflow-y-auto rounded border border-gray-200">
@@ -134,32 +86,19 @@ function Onepoint() {
                   </tr>
                 </thead>
                 <tbody>
-                  {onepointRecords.map((record, index) => (
-                    <tr key={index} className="text-center hover:bg-gray-50">
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.iter}
-                      </td>
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.xOld.toFixed(6)}
-                      </td>
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.xNew.toFixed(6)}
-                      </td>
-                      <td className="border border-gray-200 px-2 py-1">
-                        {record.error.toFixed(6)}
-                      </td>
+                  {records.map((rec) => (
+                    <tr key={rec.iter} className="text-center hover:bg-gray-50">
+                      <td className="border border-gray-200 px-2 py-1">{rec.iter}</td>
+                      <td className="border border-gray-200 px-2 py-1">{rec.xOld.toFixed(6)}</td>
+                      <td className="border border-gray-200 px-2 py-1">{rec.xNew.toFixed(6)}</td>
+                      <td className="border border-gray-200 px-2 py-1">{rec.error.toFixed(6)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <OnePointGraph
-              dataX={dataX}
-              dataY={dataY}
-              iterations={onepointRecords}
-              graphName="One-Point Iteration Method"
-              uiRevision={`onepoint-${plotRev}`}
-            />
+            <OnePointGraph dataX={dataX} dataY={dataY} iterations={records}
+              graphName="One-Point Iteration Method" uiRevision={`onepoint-${plotRev}`} />
           </div>
         )}
       </center>
